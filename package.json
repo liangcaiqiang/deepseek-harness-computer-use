@@ -21,10 +21,11 @@
     "src/index.js",
     "cordis.patch.yml",
     "README.md",
+    "LICENSE",
     "helper/pcctl_gui.swift",
     "scripts/build-helper.sh"
   ],
-  "license": "UNLICENSED",
+  "license": "MIT",
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
