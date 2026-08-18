@@ -1,0 +1,33 @@
+{
+  "name": "@local/dsh-computer-use",
+  "version": "4.0.2",
+  "description": "面向 DeepSeek Harness 的 macOS Computer Use 能力层",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/liangcaiqiang/deepseek-harness-computer-use.git"
+  },
+  "homepage": "https://github.com/liangcaiqiang/deepseek-harness-computer-use",
+  "bugs": {
+    "url": "https://github.com/liangcaiqiang/deepseek-harness-computer-use/issues"
+  },
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src/index.js",
+    "cordis.patch.yml",
+    "README.md",
+    "helper/pcctl_gui.swift",
+    "scripts/build-helper.sh"
+  ],
+  "license": "UNLICENSED",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
