@@ -1,0 +1,39 @@
+name: 功能建议
+description: 描述使用场景与希望改进的能力
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 想解决什么问题？
+      description: 描述具体使用场景、目标应用及目前遇到的限制。
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 建议的方案
+      description: 希望增加的能力或交互方式。
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 考虑过的替代方案
+    validations:
+      required: false
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 如何判断改进有效？
+      description: 给出一个可验证的使用示例或预期结果。
+    validations:
+      required: false
+  - type: textarea
+    id: security
+    attributes:
+      label: 权限与确认要求
+      description: 是否涉及新的系统权限、敏感信息或高影响操作？如有，请说明应在哪里请求用户确认。
+    validations:
+      required: false

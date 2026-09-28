@@ -1,0 +1,72 @@
+name: CI
+
+"on":
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: 语法与项目文件检查
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # 固定 v7.0.1
+        with:
+          persist-credentials: false
+      - name: 准备 Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # 固定 v7.0.0
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: 检查语法
+        run: |
+          node --check src/index.js
+          bash -n scripts/build-helper.sh
+      - name: 检查包元数据
+        run: |
+          node --input-type=module <<'JS'
+          import { readFileSync } from 'node:fs';
+          import { normalize } from 'node:path';
+          import assert from 'node:assert/strict';
+          const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
+          assert.equal(pkg.type, 'module');
+          assert.match(pkg.version, /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/);
+          assert.equal(normalize(pkg.main), 'src/index.js');
+          assert.equal(normalize(pkg.dsh.bundle.patch), 'cordis.patch.yml');
+          console.log(`包元数据有效：${pkg.name}@${pkg.version}`);
+          JS
+      - name: 检查必要文件
+        shell: bash
+        run: |
+          set -euo pipefail
+          for path in README.md LICENSE CHANGELOG.md package.json cordis.patch.yml src/index.js helper/pcctl_gui.swift scripts/build-helper.sh .github/ISSUE_TEMPLATE/bug_report.yml .github/ISSUE_TEMPLATE/feature_request.yml; do
+            test -s "$path"
+          done
+
+  build-helper:
+    name: macOS Helper 编译
+    runs-on: macos-latest
+    timeout-minutes: 10
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # 固定 v7.0.1
+        with:
+          persist-credentials: false
+      - name: 编译 Swift Helper
+        env:
+          DSH_COMPUTER_USE_HELPER: ${{ runner.temp }}/dsh-helper-check/pcctl_gui
+        run: |
+          swiftc --version
+          bash scripts/build-helper.sh
+          test -x "$DSH_COMPUTER_USE_HELPER"
